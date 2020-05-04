@@ -1,0 +1,17 @@
+_ReSharper*
+bin/
+*.swp
+obj/
+*.user
+*.suo
+.gitk*
+*/logs/*
+deploy/
+output/
+*.cache
+AssemblyTitle.cs
+packages/*
+*.csproj.DotSettings
+.idea/
+*.sln.iml
+.vs
