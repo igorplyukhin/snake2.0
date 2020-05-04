@@ -22,17 +22,8 @@ namespace SnakeGame
         public Game(string map)
         {
             creatures = new List<ICreature>();
-            snake = new Snake(new Point(1, 1), Direction.Down, "snake");
-            creatures.Add(snake);
-            CreatureMapCreator.CreateMap(map, this);      
-        }
-      
-        public Game(int width, int height)
-        {
-            map = new ICreature[width, height];
-            snake =  new Snake(new Point(1, 1), Direction.Down, "snake");
-            creatures = new List<ICreature>();
-            creatures.Add(snake);
+            CreatureMapCreator.CreateMap(map, this);
+            AddFood();
         }
 
         public void Restart()
@@ -46,13 +37,14 @@ namespace SnakeGame
 
         public void GameIteration()
         {
-            snake.Move(MapWidth, MapHeight, this);
+            snake.Move(this);
             if (!CheckConflicts())
             {
                 isOver = true;
                 finishReason = "Dead snake(";
                 return;
             }
+
             CheckFood();
         }
 
@@ -79,14 +71,15 @@ namespace SnakeGame
             var rndm = new Random();
             var x = rndm.Next(0, MapWidth);
             var y = rndm.Next(0, MapHeight);
-            while (snake.body.Contains(new Point(x,y)) && map[x,y] != null)
+            while (snake.body.Contains(new Point(x,y)) || map[x, y] != null)
             {
                 x = rndm.Next(0, MapWidth);
                 y = rndm.Next(0, MapHeight);
             }
-            var creature = new Food(new Point(x, y), "food");
-            map[x, y] = creature;
-            creatures.Add(creature);
+
+            var food = new Food(new Point(x, y), "food");
+            map[x, y] = food;
+            creatures.Add(food);
             foodCount++;
         }
 
@@ -96,24 +89,25 @@ namespace SnakeGame
         public bool CheckConflicts()
         {
             var survived = new List<ICreature>();
-            var snake = creatures[0];
             survived.Add(snake);
-            foreach(var c in creatures.Skip(1))
+            foreach (var c in creatures)
             {
-                if (snake.GetPosition() == c.GetPosition())
+                if (snake.GetPosition() != c.GetPosition())
                 {
-                    if (snake.DeadInConflict(c))
-                        return false;
-                    if (!c.DeadInConflict(snake))
-                        survived.Add(c);
-                    c.ActInConflict(snake, this);
-                    snake.ActInConflict(c, this);
-                    if (isOver)
-                        return true;
+                    survived.Add(c);
                     continue;
                 }
-                survived.Add(c);
+
+                if (snake.DeadInConflict(c))
+                    return false;
+                if (!c.DeadInConflict(snake))
+                    survived.Add(c);
+                c.ActInConflict(snake, this);
+                snake.ActInConflict(c, this);
+                if (isOver)
+                    return true;
             }
+
             creatures = survived;
             return true;
         }

@@ -41,6 +41,13 @@ namespace SnakeGame
                         game.creatures.Add(creature);
                         return creature;
                     }
+                case 'S':
+                {
+                    var creature = new Snake(new Point(x,y), Direction.Down, "snake" );
+                    game.creatures.Add(creature);
+                    game.snake = creature;
+                    return creature;
+                }
                 default:
                     throw new Exception($"wrong character for ICreature {c}");
             }

@@ -16,20 +16,20 @@ namespace Tests
         private const string map1 = @"
 NNNNNNNNNN
 NNNNNNNNNN
-NNNNNNNNNN
+NNNNNSNNNN
 NNNNNNNNNN
 WWWWWWWWWW";
 
         private const string map2 = @"
 NNNNNNNNNN
-NNNNNNNNNN
+NSNNNNNNNN
 NNNNNNNNNN
 NNNNNNNNNN
 NNNNNNNNNN";
 
         private const string map3 = @"
 NNNNNNNNNN
-NNNNNNNNNN
+NSNNNNNNNN
 NBNNNNNNNN
 NNNNNNNNNN
 NDNNNNNNNN";
@@ -38,7 +38,7 @@ NDNNNNNNNN";
         public void SnakeShouldMoveToDirectionWithoutClick()
         {
             var game = new Game(map1);
-            var direction = game.snake.GetDirection(game.snake.direction);
+            var direction = SnakeGame.Snake.DirectionToPoint[game.snake.direction];
             var firstPos = game.snake.GetPosition();
             game.GameIteration();
             var secondPos = game.snake.GetPosition();

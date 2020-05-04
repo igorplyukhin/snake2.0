@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace SnakeGame
 {
@@ -12,6 +11,15 @@ namespace SnakeGame
         private bool adding = false;
         
         public LinkedList<Point> body;
+        
+        public static Dictionary<Direction, Point> DirectionToPoint = new Dictionary<Direction, Point>
+        {
+            {Direction.Down, new Point(0,1)},
+            {Direction.Up, new Point(0,-1)},
+            {Direction.Left, new Point(-1,0)},
+            {Direction.Right, new Point(1,0)}
+        };
+
 
         public Snake(Point pos, Direction dir, string name)
         {
@@ -19,55 +27,39 @@ namespace SnakeGame
             
             head = pos;
             body = new LinkedList<Point>();
-            body.AddLast(pos);
+            body.AddFirst(pos);
             direction = dir;
         }
 
-        public void Move(int mapWidth, int mapHeight, Game game)
+        public void Move(Game game)
         {
-            var dir = GetDirection(direction);
-            head = new Point((mapWidth + head.X + dir.X) % mapWidth,
-                             (mapHeight + head.Y + dir.Y) % mapHeight); 
+            var dir = DirectionToPoint[direction];
+            head = new Point((game.MapWidth + head.X + dir.X) % game.MapWidth,
+                             (game.MapHeight + head.Y + dir.Y) % game.MapHeight); 
             if (body.Contains(head))
             {
                 game.isOver = true;
                 game.finishReason = "Dead snake(";
                 return;
             }
+
             if (!adding)
-                body.RemoveFirst();
+            {
+                body.RemoveLast();
+            }
+
             adding = false;
-            body.AddLast(head);
+            body.AddFirst(head);
         }
 
         public void TryChangeDirection(Direction dir)
         {
-            var p1 = GetDirection(dir);
-            var p2 = GetDirection(direction);
+            var p1 = DirectionToPoint[dir];
+            var p2 = DirectionToPoint[direction];
             if (p1.X != p2.X && p1.Y != p2.Y)
                 direction = dir;
         }
-
-        public Point GetDirection(Direction dir)
-        {
-            Point point = new Point(0,0);
-            switch(dir)
-            {
-                case Direction.Down:
-                    point = new Point(0, 1);
-                    break;
-                case Direction.Up:
-                    point = new Point(0, -1);
-                    break;
-                case Direction.Left:
-                    point = new Point(-1, 0);
-                    break;
-                case Direction.Right:
-                    point = new Point(1, 0);
-                    break;
-            }
-            return point;
-        }
+        
 
         public void SnakeAdd()
         {
@@ -86,14 +78,7 @@ namespace SnakeGame
             if (conflictedObject is Food)
                 SnakeAdd();
         }
-
-        public void Draw(PaintEventArgs e)
-        {
-            foreach (var b in body)
-            {
-                e.Graphics.FillRectangle(Brushes.Bisque, b.X * 10, b.Y * 10, 10, 10);
-            }
-        }
+        
 
         public Point GetPosition()
         {

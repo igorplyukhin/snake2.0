@@ -17,7 +17,7 @@ namespace SnakeGame
         {
             if (conflictedObject is Snake)
             {
-                var dir = game.snake.GetDirection(game.snake.direction);
+                var dir = Snake.DirectionToPoint[game.snake.direction];
                 //var newPos = pos + new Size(dir);
                 var x = (pos.X + dir.X + game.MapWidth) % game.MapWidth;
                 var y = (pos.Y + dir.Y + game.MapHeight) % game.MapHeight;

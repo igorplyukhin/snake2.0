@@ -3,38 +3,24 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Snake;
 
 namespace SnakeGame
 {
     class MainForm : Form
     {
-        private const string mapWithPlayerTerrain = @"
-NNNNNNNNNNNNNNNNNNN
-NNNNNNNNNNNNNNNNNNN
-NNNNNNNNNNNNNNNNNNW
-NNNNNNNNNNNNNNNNNNW
-NNNNNNNNNNNNNNNNNNW
-NNNNNNNNNNNNNNNNNNW
-NNNNNNNNNNNNNNNNNNW
-NNNNNNNNNNNNNNNNNNW
-NNNNNNNNNNNNNNNNNNW
-NNNNNBNNNNNNNNNNNNN
-NNNNNNNNNNNNNNNNNNN
-NNNNNNNNNNNNNNDNNNN
-NNNNNNNNNNNNNNNNNNN
-NNNNNNNNNNNNNNNNNNN";
-
         private readonly Timer timer;
         private Game game;
-        private const int ElementSize = 30;
+        private const int ElementSize = 32;
 
         public MainForm()
         {
-            //game = new Game(15, 15);
-            game = new Game(mapWithPlayerTerrain);
+            DoubleBuffered = true;
+            game = new Game(Levels.mapWithPlayerTerrain);
             ClientSize = new Size(
                 ElementSize * game.MapWidth,
                 ElementSize * game.MapHeight + ElementSize);
+            
             timer = new Timer { Interval = 150 };
             timer.Tick += TimerTick;
             timer.Start();
@@ -53,7 +39,6 @@ NNNNNNNNNNNNNNNNNNN";
                 timer.Start();
             }
             Invalidate();
-            Update();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -63,7 +48,7 @@ NNNNNNNNNNNNNNNNNNN";
                     e.Graphics.FillRectangle(creatureColor["background"],
                         x* ElementSize, y* ElementSize,
                         ElementSize, ElementSize);
-            foreach (var c in game.creatures.Skip(1))
+            foreach (var c in game.creatures)
             {
                 e.Graphics.FillRectangle(creatureColor[c.GetName()],
                     c.GetPosition().X*ElementSize, c.GetPosition().Y*ElementSize,
