@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace SnakeGame
 {
-    class Snake : ILiveCreature
+    class Snake : IAliveCreature
     {
         private Point head;
         private string name;

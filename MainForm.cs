@@ -12,7 +12,6 @@ namespace SnakeGame
         private readonly Timer timer;
         private Game game;
         private const int ElementSize = 32;
-
         public MainForm()
         {
             DoubleBuffered = true;
@@ -60,11 +59,11 @@ namespace SnakeGame
                     }
 
                 }
-            foreach (var creature in game.liveCreatures)
-                DrawLiveCreature(creature, e);
+            foreach (var creature in game.aliveCreatures)
+                DrawAliveCreature(creature, e);
         }
 
-        private void DrawLiveCreature(ILiveCreature creature, PaintEventArgs e)
+        private void DrawAliveCreature(IAliveCreature creature, PaintEventArgs e)
         {
             foreach (var part in creature.GetBody())
                 e.Graphics.FillRectangle(creatureColor[creature.GetName()],
@@ -86,7 +85,7 @@ namespace SnakeGame
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            game.KeyPressed(e.KeyCode, game.liveCreatures[0]);
+            game.KeyPressed(e.KeyCode, game.aliveCreatures[0]);
         }
     }
 }

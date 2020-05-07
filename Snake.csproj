@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Box.cs" />
-    <Compile Include="ILiveCrreature.cs" />
+    <Compile Include="IAliveCrreature.cs" />
     <Compile Include="Levels.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="CreatureMapCreator.cs" />

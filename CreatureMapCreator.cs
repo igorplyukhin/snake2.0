@@ -27,9 +27,9 @@ namespace SnakeGame
             switch (c)
             {
                 case 'S':
-                    var name = String.Format("snake{0}", game.liveCreatures.Count);
+                    var name = String.Format("snake{0}", game.aliveCreatures.Count);
                     var creature = new Snake(new Point(x, y), Direction.Down, name);
-                    game.liveCreatures.Add(creature);
+                    game.aliveCreatures.Add(creature);
                     return null;
                 default:
                     return null;

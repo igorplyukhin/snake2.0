@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SnakeGame
 {
-    interface ILiveCreature
+    interface IAliveCreature
     {
         string GetName();
         Point GetPosition();

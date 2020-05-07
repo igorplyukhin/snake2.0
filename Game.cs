@@ -14,7 +14,7 @@ namespace SnakeGame
         private int foodCount;
         public bool isOver;
         public bool delayedFinish;
-        public List<ILiveCreature> liveCreatures;
+        public List<IAliveCreature> aliveCreatures;
         public ICreature[,] map;
         public string finishReason;
         public int MapWidth => map.GetLength(0);
@@ -23,7 +23,7 @@ namespace SnakeGame
         public Game(string map)
         {
             mapSave = map;
-            liveCreatures = new List<ILiveCreature>();
+            aliveCreatures = new List<IAliveCreature>();
             CreatureMapCreator.CreateMap(map, this);
             AddFood();
         }
@@ -32,38 +32,38 @@ namespace SnakeGame
         {
             isOver = false;
             delayedFinish = false;
-            liveCreatures = new List<ILiveCreature>();
+            aliveCreatures = new List<IAliveCreature>();
             CreatureMapCreator.CreateMap(mapSave, this);
             foodCount = 0;
         }
 
         public void GameIteration()
         {
-            foreach (var s in liveCreatures)
+            foreach (var s in aliveCreatures)
                 s.Move(this);
             CheckFood();
         }
 
-        public void KeyPressed(Keys key, ILiveCreature snake)
+        public void KeyPressed(Keys key, IAliveCreature snake)
         {
             if (key == Keys.Left)
-                liveCreatures[0].TryChangeDirection(Direction.Left);
+                aliveCreatures[0].TryChangeDirection(Direction.Left);
             if (key == Keys.Up)
-                liveCreatures[0].TryChangeDirection(Direction.Up);
+                aliveCreatures[0].TryChangeDirection(Direction.Up);
             if (key == Keys.Down)
-                liveCreatures[0].TryChangeDirection(Direction.Down);
+                aliveCreatures[0].TryChangeDirection(Direction.Down);
             if (key == Keys.Right)
-                liveCreatures[0].TryChangeDirection(Direction.Right);
-            if (liveCreatures.Count == 1)
+                aliveCreatures[0].TryChangeDirection(Direction.Right);
+            if (aliveCreatures.Count == 1)
                 return;
             if (key == Keys.A)
-                liveCreatures[1].TryChangeDirection(Direction.Left);
+                aliveCreatures[1].TryChangeDirection(Direction.Left);
             if (key == Keys.W)
-                liveCreatures[1].TryChangeDirection(Direction.Up);
+                aliveCreatures[1].TryChangeDirection(Direction.Up);
             if (key == Keys.S)
-                liveCreatures[1].TryChangeDirection(Direction.Down);
+                aliveCreatures[1].TryChangeDirection(Direction.Down);
             if (key == Keys.D)
-                liveCreatures[1].TryChangeDirection(Direction.Right);
+                aliveCreatures[1].TryChangeDirection(Direction.Right);
         }
 
         public void CheckFood()
@@ -80,10 +80,10 @@ namespace SnakeGame
             var check = true;
             while (check)
             {
-                var count = liveCreatures.Count;
+                var count = aliveCreatures.Count;
                 x = rndm.Next(0, MapWidth);
                 y = rndm.Next(0, MapHeight);
-                foreach (var s in liveCreatures)
+                foreach (var s in aliveCreatures)
                 {
                     var body = s.GetBody();
                     if (map[x, y] == null && !body.Contains(new Point(x, y)))

@@ -19,7 +19,7 @@ namespace SnakeGame
                 game.map[pos.X, pos.Y] = null;
         }
 
-        public void ActInConflict(ILiveCreature conflictedObject, Game game)
+        public void ActInConflict(IAliveCreature conflictedObject, Game game)
         {
             if (conflictedObject is Snake)
             {
