@@ -16,11 +16,11 @@ namespace SnakeGame
         public MainForm()
         {
             DoubleBuffered = true;
-            game = new Game(Levels.mapWithPlayerTerrain);
+            game = new Game(Levels.mapWithTwoSnakes);
             ClientSize = new Size(
                 ElementSize * game.MapWidth,
                 ElementSize * game.MapHeight + ElementSize);
-            
+
             timer = new Timer { Interval = 150 };
             timer.Tick += TimerTick;
             timer.Start();
@@ -31,6 +31,8 @@ namespace SnakeGame
             game.GameIteration();
             if (game.isOver)
             {
+                if (game.delayedFinish)
+                    Invalidate();
                 timer.Stop();
                 var res = MessageBox.Show("Restart ?", game.finishReason, MessageBoxButtons.YesNo);
                 if (res != DialogResult.Yes)
@@ -45,26 +47,35 @@ namespace SnakeGame
         {
             for (var x = 0; x < game.MapWidth; x++)
                 for (var y = 0; y < game.MapHeight; y++)
+                {
                     e.Graphics.FillRectangle(creatureColor["background"],
-                        x* ElementSize, y* ElementSize,
+                        x * ElementSize, y * ElementSize,
                         ElementSize, ElementSize);
-            foreach (var c in game.creatures)
-            {
-                e.Graphics.FillRectangle(creatureColor[c.GetName()],
-                    c.GetPosition().X*ElementSize, c.GetPosition().Y*ElementSize,
-                    ElementSize, ElementSize);
-            }
-            foreach (var b in game.snake.body)
-            {
-                e.Graphics.FillRectangle(creatureColor[game.snake.GetName()],
-                    b.X * ElementSize, b.Y * ElementSize,
-                    ElementSize, ElementSize);
-            }
+                    if (game.map[x, y] != null)
+                    {
+                        var creature = game.map[x, y];
+                        e.Graphics.FillRectangle(creatureColor[creature.GetName()],
+                        creature.GetPosition().X * ElementSize, creature.GetPosition().Y * ElementSize,
+                        ElementSize, ElementSize);
+                    }
+
+                }
+            foreach (var creature in game.liveCreatures)
+                DrawLiveCreature(creature, e);
+        }
+
+        private void DrawLiveCreature(ILiveCreature creature, PaintEventArgs e)
+        {
+            foreach (var part in creature.GetBody())
+                e.Graphics.FillRectangle(creatureColor[creature.GetName()],
+                        part.X * ElementSize, part.Y * ElementSize,
+                        ElementSize, ElementSize);
         }
 
         private Dictionary<string, Brush> creatureColor = new Dictionary<string, Brush>
         {
-            {"snake", Brushes.Gray },
+            {"snake0", Brushes.Gray },
+            {"snake1", Brushes.Yellow },
             {"wall", Brushes.Black },
             {"food", Brushes.Red },
             {"background", Brushes.AliceBlue },
@@ -75,7 +86,7 @@ namespace SnakeGame
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            game.KeyPressed(e.KeyCode);
-        }        
+            game.KeyPressed(e.KeyCode, game.liveCreatures[0]);
+        }
     }
 }

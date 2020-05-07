@@ -22,6 +22,13 @@ namespace SnakeGame
             }
         }
 
+        public void ActInConflict(ILiveCreature conflictedObject, Game game)
+        {
+            game.isOver = true;
+            game.finishReason = "Голова бо-бо";
+            return;
+        }
+
         public bool DeadInConflict(ICreature conflictedObject)
         {
             return false;

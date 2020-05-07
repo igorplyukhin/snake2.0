@@ -18,8 +18,14 @@ namespace SnakeGame
             if (conflictedObject is Box)
             {
                 game.isOver = true;
+                game.delayedFinish = true;
                 game.finishReason = "Succesfull delievery";
             }
+        }
+
+        public void ActInConflict(ILiveCreature conflictedObject, Game game)
+        {
+            return;
         }
 
         public bool DeadInConflict(ICreature conflictedObject)
@@ -38,3 +44,4 @@ namespace SnakeGame
         }
     }
 }
+

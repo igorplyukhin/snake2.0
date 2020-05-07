@@ -15,8 +15,15 @@ namespace SnakeGame
 
         public void ActInConflict(ICreature conflictedObject, Game game)
         {
-            if (conflictedObject is Box || conflictedObject is Snake)
+            if (conflictedObject is Box)
+                game.map[pos.X, pos.Y] = null;
+        }
+
+        public void ActInConflict(ILiveCreature conflictedObject, Game game)
+        {
+            if (conflictedObject is Snake)
             {
+                game.map[pos.X, pos.Y] = null;
                 game.FoodEaten();
             }
         }

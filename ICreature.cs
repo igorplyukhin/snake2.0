@@ -8,5 +8,6 @@ namespace SnakeGame
         Point GetPosition();
         bool DeadInConflict(ICreature conflictedObject);
         void ActInConflict(ICreature conflictedObject, Game game);
+        void ActInConflict(ILiveCreature conflictedObject, Game game);
     }
 }

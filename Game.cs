@@ -10,10 +10,11 @@ namespace SnakeGame
 {
     class Game
     {
-        public Snake snake;
+        private string mapSave;
         private int foodCount;
         public bool isOver;
-        public List<ICreature> creatures;
+        public bool delayedFinish;
+        public List<ILiveCreature> liveCreatures;
         public ICreature[,] map;
         public string finishReason;
         public int MapWidth => map.GetLength(0);
@@ -21,7 +22,8 @@ namespace SnakeGame
 
         public Game(string map)
         {
-            creatures = new List<ICreature>();
+            mapSave = map;
+            liveCreatures = new List<ILiveCreature>();
             CreatureMapCreator.CreateMap(map, this);
             AddFood();
         }
@@ -29,35 +31,39 @@ namespace SnakeGame
         public void Restart()
         {
             isOver = false;
-            snake = new Snake(new Point(1, 1), Direction.Down, "snake");
-            creatures = new List<ICreature>();
-            creatures.Add(snake);
+            delayedFinish = false;
+            liveCreatures = new List<ILiveCreature>();
+            CreatureMapCreator.CreateMap(mapSave, this);
             foodCount = 0;
         }
 
         public void GameIteration()
         {
-            snake.Move(this);
-            if (!CheckConflicts())
-            {
-                isOver = true;
-                finishReason = "Dead snake(";
-                return;
-            }
-
+            foreach (var s in liveCreatures)
+                s.Move(this);
             CheckFood();
         }
 
-        public void KeyPressed(Keys key)
+        public void KeyPressed(Keys key, ILiveCreature snake)
         {
             if (key == Keys.Left)
-                snake.TryChangeDirection(Direction.Left);
+                liveCreatures[0].TryChangeDirection(Direction.Left);
             if (key == Keys.Up)
-                snake.TryChangeDirection(Direction.Up);
+                liveCreatures[0].TryChangeDirection(Direction.Up);
             if (key == Keys.Down)
-                snake.TryChangeDirection(Direction.Down);
+                liveCreatures[0].TryChangeDirection(Direction.Down);
             if (key == Keys.Right)
-                snake.TryChangeDirection(Direction.Right);
+                liveCreatures[0].TryChangeDirection(Direction.Right);
+            if (liveCreatures.Count == 1)
+                return;
+            if (key == Keys.A)
+                liveCreatures[1].TryChangeDirection(Direction.Left);
+            if (key == Keys.W)
+                liveCreatures[1].TryChangeDirection(Direction.Up);
+            if (key == Keys.S)
+                liveCreatures[1].TryChangeDirection(Direction.Down);
+            if (key == Keys.D)
+                liveCreatures[1].TryChangeDirection(Direction.Right);
         }
 
         public void CheckFood()
@@ -69,47 +75,28 @@ namespace SnakeGame
         public void AddFood()
         {
             var rndm = new Random();
-            var x = rndm.Next(0, MapWidth);
-            var y = rndm.Next(0, MapHeight);
-            while (snake.body.Contains(new Point(x,y)) || map[x, y] != null)
+            var x = 0;
+            var y = 0;
+            var check = true;
+            while (check)
             {
+                var count = liveCreatures.Count;
                 x = rndm.Next(0, MapWidth);
                 y = rndm.Next(0, MapHeight);
+                foreach (var s in liveCreatures)
+                {
+                    var body = s.GetBody();
+                    if (map[x, y] == null && !body.Contains(new Point(x, y)))
+                        count--;
+                }
+                check = count == 0 ? false : true;
             }
-
             var food = new Food(new Point(x, y), "food");
             map[x, y] = food;
-            creatures.Add(food);
             foodCount++;
         }
 
         public void FoodEaten() =>
             foodCount--;
-
-        public bool CheckConflicts()
-        {
-            var survived = new List<ICreature>();
-            survived.Add(snake);
-            foreach (var c in creatures)
-            {
-                if (snake.GetPosition() != c.GetPosition())
-                {
-                    survived.Add(c);
-                    continue;
-                }
-
-                if (snake.DeadInConflict(c))
-                    return false;
-                if (!c.DeadInConflict(snake))
-                    survived.Add(c);
-                c.ActInConflict(snake, this);
-                snake.ActInConflict(c, this);
-                if (isOver)
-                    return true;
-            }
-
-            creatures = survived;
-            return true;
-        }
     }
 }
