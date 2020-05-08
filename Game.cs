@@ -44,7 +44,7 @@ namespace SnakeGame
             CheckFood();
         }
 
-        public void KeyPressed(Keys key, IAliveCreature snake)
+        public void KeyPressed(Keys key)
         {
             if (key == Keys.Left)
                 aliveCreatures[0].TryChangeDirection(Direction.Left);

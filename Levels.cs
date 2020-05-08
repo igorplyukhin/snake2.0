@@ -2,7 +2,7 @@
 {
     public static class Levels
     {
-        public const string mapWithPlayerTerrain = @"
+        public const string OnePlayerBorderMap = @"
 WWWWWWWWWWWWWWWWWWW
 WNNNNNNNNNNNNNNNNNW
 WNNNNNNNNNNNNNNNNNW
@@ -18,7 +18,7 @@ WNNNNNNNNNNNNNNNNNW
 WNNNNNNNNNNNNNNNNNW
 WWWWWWWWWWWWWWWWWWW";
 
-        public const string mapWithDelievery = @"
+        public const string OnePlayerDeliveryMap = @"
 WWWWWWWWWWWWWWWWWWW
 WNNNNNNNNNNNNNNNNNW
 WNNNNNNNNNNNNNNNNNW
@@ -34,7 +34,7 @@ WNNNNNNNNNNNNNNNNNW
 WNNNNNNNNNNNNNNNNNW
 WWWWWWWWWWWWWWWWWWW";
 
-        public const string mapWithTwoSnakes = @"
+        public const string TwoPlayersBorderMap = @"
 WWWWWWWWWWWWWWWWWWW
 WNNNNNNNNNNNNNNNNNW
 WNNNNNNNNNNNNNNNNNW
