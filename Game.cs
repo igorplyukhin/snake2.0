@@ -41,7 +41,33 @@ namespace SnakeGame
         {
             foreach (var s in aliveCreatures)
                 s.Move(this);
+            if(aliveCreatures.Count > 1)
+                CheckSnakeCollisions();
             CheckFood();
+        }
+
+        public void CheckSnakeCollisions()
+        {
+            var first = aliveCreatures[0];
+            var second = aliveCreatures[1];
+            var firstInSecond = second.GetBody().Contains(first.GetPosition());
+            var secondInFirst = first.GetBody().Contains(second.GetPosition());
+            if (firstInSecond && secondInFirst)
+            {
+                isOver = true;
+                finishReason = "Snakes collided";
+            }
+            if (firstInSecond && !secondInFirst)
+            {
+                isOver = true;
+                finishReason = String.Format("{0} is dead", first.GetName());
+            }
+            if (!firstInSecond && secondInFirst)
+            {
+                isOver = true;
+                finishReason = String.Format("{0} is dead", second.GetName());
+            }
+
         }
 
         public void KeyPressed(Keys key)

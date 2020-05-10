@@ -16,7 +16,7 @@ namespace SnakeGame
         public MainForm()
         {
             DoubleBuffered = true;
-            MinimumSize = new Size(600,400);
+            MinimumSize = new Size(600,1000);
             MainMenuStrip = new MenuStrip();
             AddButtonsToMenu();
             Controls.Add(MainMenuStrip);
@@ -122,7 +122,11 @@ namespace SnakeGame
             }
 
             foreach (var creature in game.aliveCreatures)
+            {
                 DrawAliveCreature(creature, e);
+                e.Graphics.DrawString(creature.GetScore().ToString(), new Font("Arial", 16), Brushes.Green, 50, 0);
+            }
+                
             e.Graphics.ResetTransform();
         }
 

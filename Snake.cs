@@ -9,8 +9,9 @@ namespace SnakeGame
         private string name;
         private Direction direction;
         private bool adding = false;
-
+        private int score;
         private LinkedList<Point> body;
+
 
         public Dictionary<Direction, Point> DirectionToPoint = new Dictionary<Direction, Point>
         {
@@ -77,7 +78,10 @@ namespace SnakeGame
         public void ActInConflict(ICreature conflictedObject, Game game)
         {
             if (conflictedObject is Food)
+            {
                 SnakeAdd();
+                score++;
+            }
         }
 
 
@@ -101,9 +105,24 @@ namespace SnakeGame
             throw new System.NotImplementedException();
         }
 
+        public bool IsWinner()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public int GetScore()
+        {
+            return score;
+        }
+
         public Direction GetDirection()
         {
             return direction;
+        }
+
+        public void AddScore(int ads)
+        {
+            score += ads;
         }
     }
 }

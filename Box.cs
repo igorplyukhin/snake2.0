@@ -42,7 +42,9 @@ namespace SnakeGame
                     pos = new Point(x, y);
                     return;
                 }
-                creature.ActInConflict(this, game);
+                game.map[pos.X, pos.Y] = null;
+                pos = new Point(x, y);
+                creature.ActInConflict(this, conflictedObject, game);
             }
         }
 
@@ -59,6 +61,11 @@ namespace SnakeGame
         public Point GetPosition()
         {
             return pos;
+        }
+
+        public void ActInConflict(ICreature conflictedObject, IAliveCreature aliveConflictedObject, Game game)
+        {
+            return;
         }
     }
 }

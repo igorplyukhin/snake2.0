@@ -15,17 +15,21 @@ namespace SnakeGame
 
         public void ActInConflict(ICreature conflictedObject, Game game)
         {
-            if (conflictedObject is Box)
-            {
-                game.isOver = true;
-                game.delayedFinish = true;
-                game.finishReason = "Succesfull delievery";
-            }
+            return;
         }
 
         public void ActInConflict(IAliveCreature conflictedObject, Game game)
         {
             return;
+        }
+
+        public void ActInConflict(ICreature conflictedObject, IAliveCreature aliveConflictedObject, Game game)
+        {
+            if (conflictedObject is Box)
+            {
+                game.map[pos.X, pos.Y] = conflictedObject;
+                aliveConflictedObject.AddScore(10);
+            }
         }
 
         public bool DeadInConflict(ICreature conflictedObject)

@@ -15,8 +15,8 @@ namespace SnakeGame
 
         public void ActInConflict(ICreature conflictedObject, Game game)
         {
-            if (conflictedObject is Box)
-                game.map[pos.X, pos.Y] = null;
+            //if (conflictedObject is Box)
+            //    game.map[pos.X, pos.Y] = conflictedObject;
         }
 
         public void ActInConflict(IAliveCreature conflictedObject, Game game)
@@ -26,6 +26,12 @@ namespace SnakeGame
                 game.map[pos.X, pos.Y] = null;
                 game.FoodEaten();
             }
+        }
+
+        public void ActInConflict(ICreature conflictedObject, IAliveCreature aliveConflictedObject, Game game)
+        {
+            if (conflictedObject is Box)
+                game.map[pos.X, pos.Y] = conflictedObject;
         }
 
         public bool DeadInConflict(ICreature conflictedObject)
