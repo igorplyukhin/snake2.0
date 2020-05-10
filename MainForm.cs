@@ -16,8 +16,9 @@ namespace SnakeGame
         public MainForm()
         {
             DoubleBuffered = true;
-            MinimumSize = new Size(600,1000);
+            MaximizeBox = false;
             MainMenuStrip = new MenuStrip();
+            FormBorderStyle = FormBorderStyle.FixedDialog;
             AddButtonsToMenu();
             Controls.Add(MainMenuStrip);
         }
@@ -26,7 +27,7 @@ namespace SnakeGame
         {
             ClientSize = new Size(
                 ElementSize * game.MapWidth,
-                ElementSize * game.MapHeight + ElementSize);
+                ElementSize * game.MapHeight + 2 * ElementSize);
             timer = new Timer {Interval = 150};
             timer.Tick += TimerTick;
             timer.Start();
@@ -75,6 +76,7 @@ namespace SnakeGame
 
         private void ChangeLevel(object sender, EventArgs e)
         {
+            timer?.Stop();
             var levelName = ((ToolStripButton) sender).Name;
             game = new Game(typeof(Levels).GetField(levelName).GetValue(null).ToString());
             StartGame();
@@ -100,12 +102,14 @@ namespace SnakeGame
 
             Invalidate();
         }
-
+        
         protected override void OnPaint(PaintEventArgs e)
         {
             if (game == null)
                 return;
-            e.Graphics.TranslateTransform(0, ElementSize);
+            
+            
+            e.Graphics.TranslateTransform(0, 2 * ElementSize);
             for (var x = 0; x < game.MapWidth; x++)
             for (var y = 0; y < game.MapHeight; y++)
             {
@@ -121,12 +125,15 @@ namespace SnakeGame
                 }
             }
 
+            var creatureCount = 0;
             foreach (var creature in game.aliveCreatures)
             {
                 DrawAliveCreature(creature, e);
-                e.Graphics.DrawString(creature.GetScore().ToString(), new Font("Arial", 16), Brushes.Green, 50, 0);
+                e.Graphics.DrawString(creature.GetScore().ToString(), new Font("Arial", 20), 
+                    creatureColor[creature.GetName()], 5 + creatureCount * 2 * ElementSize, -ElementSize);
+                creatureCount++;
             }
-                
+
             e.Graphics.ResetTransform();
         }
 
@@ -141,7 +148,7 @@ namespace SnakeGame
         private Dictionary<string, Brush> creatureColor = new Dictionary<string, Brush>
         {
             {"snake0", Brushes.Gray},
-            {"snake1", Brushes.Yellow},
+            {"snake1", Brushes.Green},
             {"wall", Brushes.Black},
             {"food", Brushes.Red},
             {"background", Brushes.AliceBlue},
