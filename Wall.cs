@@ -4,8 +4,8 @@ namespace SnakeGame
 {
     class Wall : ICreature
     {
-        public Point pos;
-        public string name;
+        private Point pos;
+        private string name;
 
         public Wall(Point pos, string name)
         {
@@ -13,10 +13,8 @@ namespace SnakeGame
             this.pos = pos;
         }
 
-        public void ActInConflict(ICreature conflictedObject, Game game)
-        {
-            return;
-        }
+        public void ActInConflict(ICreature conflictedObject, Game game) { }
+
 
         public void ActInConflict(IAliveCreature conflictedObject, Game game)
         {
@@ -34,19 +32,17 @@ namespace SnakeGame
             }
         }
 
-        public bool DeadInConflict(ICreature conflictedObject)
-        {
-            return false;
-        }
+        public bool DeadInConflict(ICreature conflictedObject) => false;
 
-        public string GetName()
-        {
-            return name;
-        }
+        public string GetName() => name;
 
-        public Point GetPosition()
+        public Point GetPosition() => pos;
+
+
+        public void SetPosition(int x, int y)
         {
-            return pos;
+            pos.X = x;
+            pos.Y = y;
         }
     }
 }

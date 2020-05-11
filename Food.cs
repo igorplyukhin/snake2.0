@@ -24,7 +24,7 @@ namespace SnakeGame
             if (conflictedObject is Snake)
             {
                 game.map[pos.X, pos.Y] = null;
-                game.FoodEaten();
+                game.Add(this);
             }
         }
 
@@ -47,6 +47,12 @@ namespace SnakeGame
         public Point GetPosition()
         {
             return pos;
+        }
+
+        public void SetPosition(int x, int y)
+        {
+            pos.X = x;
+            pos.Y = y;
         }
     }
 }

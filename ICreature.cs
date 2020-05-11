@@ -6,7 +6,7 @@ namespace SnakeGame
     {
         string GetName();
         Point GetPosition();
-        bool DeadInConflict(ICreature conflictedObject);
+        void SetPosition(int x, int y);
         void ActInConflict(ICreature conflictedObject, Game game);
         void ActInConflict(ICreature conflictedObject, IAliveCreature aliveConflictedObject, Game game);
         void ActInConflict(IAliveCreature conflictedObject, Game game);

@@ -99,7 +99,6 @@ namespace SnakeGame
                     timer.Start();
                 }
             }
-
             Invalidate();
         }
         
@@ -107,8 +106,6 @@ namespace SnakeGame
         {
             if (game == null)
                 return;
-            
-            
             e.Graphics.TranslateTransform(0, 2 * ElementSize);
             for (var x = 0; x < game.MapWidth; x++)
             for (var y = 0; y < game.MapHeight; y++)
@@ -147,8 +144,8 @@ namespace SnakeGame
 
         private Dictionary<string, Brush> creatureColor = new Dictionary<string, Brush>
         {
-            {"snake0", Brushes.Gray},
-            {"snake1", Brushes.Green},
+            {"snake1", Brushes.OrangeRed},
+            {"snake2", Brushes.Green},
             {"wall", Brushes.Black},
             {"food", Brushes.Red},
             {"background", Brushes.AliceBlue},

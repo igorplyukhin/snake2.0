@@ -5,12 +5,12 @@ namespace SnakeGame
 {
     class Snake : IAliveCreature
     {
-        private Point head;
         private string name;
         private Direction direction;
         private bool adding = false;
         private int score;
         private LinkedList<Point> body;
+        private bool alive;
 
 
         public Dictionary<Direction, Point> DirectionToPoint = new Dictionary<Direction, Point>
@@ -24,34 +24,28 @@ namespace SnakeGame
         public Snake(Point pos, Direction dir, string name)
         {
             this.name = name;
-            head = pos;
             body = new LinkedList<Point>();
             body.AddFirst(pos);
             direction = dir;
+            alive = true;
         }
 
         public void Move(Game game)
         {
             var dir = DirectionToPoint[direction];
-            head = new Point((game.MapWidth + head.X + dir.X) % game.MapWidth,
-                             (game.MapHeight + head.Y + dir.Y) % game.MapHeight);
+            var curHead = GetPosition();
+            var head = new Point((game.MapWidth + curHead.X + dir.X) % game.MapWidth,
+                             (game.MapHeight + curHead.Y + dir.Y) % game.MapHeight);
             if (body.Contains(head))
             {
                 game.isOver = true;
-                game.finishReason = "Dead snake(";
+                game.finishReason = string.Format("Dead {0}", name);
                 return;
             }
             if (!adding)
-            {
                 body.RemoveLast();
-            }
             adding = false;
             body.AddFirst(head);
-            if (game.map[head.X, head.Y] != null)
-            {
-                ActInConflict(game.map[head.X, head.Y], game);
-                game.map[head.X, head.Y].ActInConflict(this, game);
-            }
         }
 
         public void TryChangeDirection(Direction dir)
@@ -60,12 +54,6 @@ namespace SnakeGame
             var p2 = DirectionToPoint[direction];
             if (p1.X != p2.X && p1.Y != p2.Y)
                 direction = dir;
-        }
-
-
-        public void SnakeAdd()
-        {
-            adding = true;
         }
 
         public bool DeadInConflict(ICreature conflictedObject)
@@ -79,50 +67,34 @@ namespace SnakeGame
         {
             if (conflictedObject is Food)
             {
-                SnakeAdd();
+                adding = true;
                 score++;
             }
         }
 
+        public Point GetPosition() => body.First.Value;
 
-        public Point GetPosition()
-        {
-            return head;
-        }
+        public string GetName() => name;
 
-        public string GetName()
-        {
-            return name;
-        }
-
-        public LinkedList<Point> GetBody()
-        {
-            return body;
-        }
+        public LinkedList<Point> GetBody() => body;
 
         public bool IsAlive()
         {
             throw new System.NotImplementedException();
         }
 
-        public bool IsWinner()
-        {
-            throw new System.NotImplementedException();
-        }
+        public int GetScore() => score;
 
-        public int GetScore()
-        {
-            return score;
-        }
-
-        public Direction GetDirection()
-        {
-            return direction;
-        }
+        public Direction GetDirection() => direction;
 
         public void AddScore(int ads)
         {
             score += ads;
+        }
+
+        public void Die()
+        {
+            alive = false;
         }
     }
 }

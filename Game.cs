@@ -11,7 +11,6 @@ namespace SnakeGame
     class Game
     {
         private string mapSave;
-        private int foodCount;
         public bool isOver;
         public bool delayedFinish;
         public List<IAliveCreature> aliveCreatures;
@@ -25,7 +24,7 @@ namespace SnakeGame
             mapSave = map;
             aliveCreatures = new List<IAliveCreature>();
             CreatureMapCreator.CreateMap(map, this);
-            AddFood();
+            Add(new Food(new Point(0,0), "food"));
         }
 
         public void Restart()
@@ -34,19 +33,33 @@ namespace SnakeGame
             delayedFinish = false;
             aliveCreatures = new List<IAliveCreature>();
             CreatureMapCreator.CreateMap(mapSave, this);
-            foodCount = 0;
+            Add(new Food(new Point(0, 0), "food"));
         }
 
         public void GameIteration()
         {
             foreach (var s in aliveCreatures)
                 s.Move(this);
-            if(aliveCreatures.Count > 1)
-                CheckSnakeCollisions();
-            CheckFood();
+            CheckCollisions();
         }
 
-        public void CheckSnakeCollisions()
+        private void CheckCollisions()
+        {
+            if (aliveCreatures.Count > 1)
+                CheckSnakeCollisions();
+            foreach (var s in aliveCreatures)
+            {
+                var pos = s.GetPosition();
+                var creature = map[pos.X, pos.Y];
+                if (creature != null)
+                {
+                    creature.ActInConflict(s, this);
+                    s.ActInConflict(creature, this);
+                }
+            }
+        }
+
+        private void CheckSnakeCollisions()
         {
             var first = aliveCreatures[0];
             var second = aliveCreatures[1];
@@ -92,13 +105,7 @@ namespace SnakeGame
                 aliveCreatures[1].TryChangeDirection(Direction.Right);
         }
 
-        public void CheckFood()
-        {
-            if (foodCount == 0)
-                AddFood();
-        }
-
-        public void AddFood()
+        public void Add(ICreature creature)
         {
             var rndm = new Random();
             var x = 0;
@@ -117,12 +124,8 @@ namespace SnakeGame
                 }
                 check = count == 0 ? false : true;
             }
-            var food = new Food(new Point(x, y), "food");
-            map[x, y] = food;
-            foodCount++;
+            creature.SetPosition(x, y);
+            map[x, y] = creature;
         }
-
-        public void FoodEaten() =>
-            foodCount--;
     }
 }

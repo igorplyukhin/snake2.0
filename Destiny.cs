@@ -13,15 +13,9 @@ namespace SnakeGame
             this.pos = pos;
         }
 
-        public void ActInConflict(ICreature conflictedObject, Game game)
-        {
-            return;
-        }
+        public void ActInConflict(ICreature conflictedObject, Game game) { }
 
-        public void ActInConflict(IAliveCreature conflictedObject, Game game)
-        {
-            return;
-        }
+        public void ActInConflict(IAliveCreature conflictedObject, Game game) { }
 
         public void ActInConflict(ICreature conflictedObject, IAliveCreature aliveConflictedObject, Game game)
         {
@@ -29,22 +23,18 @@ namespace SnakeGame
             {
                 game.map[pos.X, pos.Y] = conflictedObject;
                 aliveConflictedObject.AddScore(10);
+                game.Add(this);
             }
         }
 
-        public bool DeadInConflict(ICreature conflictedObject)
-        {
-            return false;
-        }
+        public string GetName() => name;
 
-        public string GetName()
-        {
-            return name;
-        }
+        public Point GetPosition() => pos;
 
-        public Point GetPosition()
+        public void SetPosition(int x, int y)
         {
-            return pos;
+            pos.X = x;
+            pos.Y = y;
         }
     }
 }

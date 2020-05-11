@@ -22,10 +22,7 @@ namespace SnakeGame
             this.pos = pos;
         }
 
-        public void ActInConflict(ICreature conflictedObject, Game game)
-        {
-            return;
-        }
+        public void ActInConflict(ICreature conflictedObject, Game game) {}
 
         public void ActInConflict(IAliveCreature conflictedObject, Game game)
         {
@@ -35,37 +32,40 @@ namespace SnakeGame
                 var x = (pos.X + dir.X + game.MapWidth) % game.MapWidth;
                 var y = (pos.Y + dir.Y + game.MapHeight) % game.MapHeight;
                 var creature = game.map[x, y];
-                if (creature == null)
-                {
-                    game.map[pos.X, pos.Y] = null;
-                    game.map[x, y] = this;
-                    pos = new Point(x, y);
-                    return;
-                }
                 game.map[pos.X, pos.Y] = null;
                 pos = new Point(x, y);
-                creature.ActInConflict(this, conflictedObject, game);
+                if (CheckSnakeCollisions(pos, game))
+                {
+                    game.isOver = true;
+                    game.finishReason = "Box-snake collision";
+                }
+                if (creature == null)
+                    game.map[x, y] = this;
+                else
+                    creature.ActInConflict(this, conflictedObject, game);
             }
         }
 
-        public bool DeadInConflict(ICreature conflictedObject)
+        private bool CheckSnakeCollisions(Point point, Game game)
         {
+            foreach (var s in game.aliveCreatures)
+                if (s.GetBody().Contains(point))
+                    return true;
             return false;
         }
 
-        public string GetName()
-        {
-            return name;
-        }
+        public bool DeadInConflict(ICreature conflictedObject) => false;
 
-        public Point GetPosition()
-        {
-            return pos;
-        }
+        public string GetName() => name;
 
-        public void ActInConflict(ICreature conflictedObject, IAliveCreature aliveConflictedObject, Game game)
+        public Point GetPosition() => pos;
+
+        public void ActInConflict(ICreature conflictedObject, IAliveCreature aliveConflictedObject, Game game) {}
+
+        public void SetPosition(int x, int y)
         {
-            return;
+            pos.X = x;
+            pos.Y = y;
         }
     }
 }
