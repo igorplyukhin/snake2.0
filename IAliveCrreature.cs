@@ -13,13 +13,10 @@ namespace SnakeGame
         Point GetPosition();
         Direction GetDirection();
         LinkedList<Point> GetBody();
-        bool IsAlive();
         int GetScore();
         void AddScore(int ads);
-        bool DeadInConflict(ICreature conflictedObject);
         void ActInConflict(ICreature conflictedObject, Game game);
         void TryChangeDirection(Direction direction);
         void Move(Game game);
-        void Die();
     }
 }

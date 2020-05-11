@@ -13,11 +13,7 @@ namespace SnakeGame
             this.pos = pos;
         }
 
-        public void ActInConflict(ICreature conflictedObject, Game game)
-        {
-            //if (conflictedObject is Box)
-            //    game.map[pos.X, pos.Y] = conflictedObject;
-        }
+        public void ActInConflict(ICreature conflictedObject, Game game) { }
 
         public void ActInConflict(IAliveCreature conflictedObject, Game game)
         {
@@ -34,20 +30,9 @@ namespace SnakeGame
                 game.map[pos.X, pos.Y] = conflictedObject;
         }
 
-        public bool DeadInConflict(ICreature conflictedObject)
-        {
-            return true;
-        }
+        public string GetName() => name;
 
-        public string GetName()
-        {
-            return name;
-        }
-
-        public Point GetPosition()
-        {
-            return pos;
-        }
+        public Point GetPosition() => pos;
 
         public void SetPosition(int x, int y)
         {

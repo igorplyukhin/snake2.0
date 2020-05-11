@@ -32,8 +32,6 @@ namespace SnakeGame
             }
         }
 
-        public bool DeadInConflict(ICreature conflictedObject) => false;
-
         public string GetName() => name;
 
         public Point GetPosition() => pos;

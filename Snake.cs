@@ -10,7 +10,6 @@ namespace SnakeGame
         private bool adding = false;
         private int score;
         private LinkedList<Point> body;
-        private bool alive;
 
 
         public Dictionary<Direction, Point> DirectionToPoint = new Dictionary<Direction, Point>
@@ -27,7 +26,6 @@ namespace SnakeGame
             body = new LinkedList<Point>();
             body.AddFirst(pos);
             direction = dir;
-            alive = true;
         }
 
         public void Move(Game game)
@@ -78,11 +76,6 @@ namespace SnakeGame
 
         public LinkedList<Point> GetBody() => body;
 
-        public bool IsAlive()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public int GetScore() => score;
 
         public Direction GetDirection() => direction;
@@ -90,11 +83,6 @@ namespace SnakeGame
         public void AddScore(int ads)
         {
             score += ads;
-        }
-
-        public void Die()
-        {
-            alive = false;
         }
     }
 }
