@@ -10,6 +10,7 @@ namespace SnakeGame
         private bool adding = false;
         private int score;
         private LinkedList<Point> body;
+        private bool liveState = true;
 
 
         public Dictionary<Direction, Point> DirectionToPoint = new Dictionary<Direction, Point>
@@ -28,16 +29,15 @@ namespace SnakeGame
             direction = dir;
         }
 
-        public void Move(Game game)
+        public void Move(int mapWidth,int mapHeight)
         {
             var dir = DirectionToPoint[direction];
             var curHead = GetPosition();
-            var head = new Point((game.MapWidth + curHead.X + dir.X) % game.MapWidth,
-                             (game.MapHeight + curHead.Y + dir.Y) % game.MapHeight);
+            var head = new Point((mapWidth + curHead.X + dir.X) % mapWidth,
+                             (mapHeight + curHead.Y + dir.Y) % mapHeight);
             if (body.Contains(head))
             {
-                game.isOver = true;
-                game.finishReason = string.Format("Dead {0}", name);
+                liveState = false;
                 return;
             }
             if (!adding)
@@ -54,20 +54,19 @@ namespace SnakeGame
                 direction = dir;
         }
 
+        public void ActInConflict(ICreature conflictedObject)
+        {
+            if (conflictedObject is Wall)
+                liveState = false;
+            if (conflictedObject is Food)
+                adding = true;
+        }
+
         public bool DeadInConflict(ICreature conflictedObject)
         {
             if (conflictedObject is Wall)
                 return true;
             return false;
-        }
-
-        public void ActInConflict(ICreature conflictedObject, Game game)
-        {
-            if (conflictedObject is Food)
-            {
-                adding = true;
-                score++;
-            }
         }
 
         public Point GetPosition() => body.First.Value;
@@ -80,10 +79,9 @@ namespace SnakeGame
 
         public Direction GetDirection() => direction;
 
-        public void AddScore(int ads)
-        {
-            score += ads;
-        }
+        public void AddScore(int ads) => score += ads;
+
+        public bool IsAlive() => liveState;
     }
 }
 

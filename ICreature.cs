@@ -6,9 +6,9 @@ namespace SnakeGame
     {
         string GetName();
         Point GetPosition();
-        void SetPosition(int x, int y);
-        void ActInConflict(ICreature conflictedObject, Game game);
-        void ActInConflict(ICreature conflictedObject, IAliveCreature aliveConflictedObject, Game game);
-        void ActInConflict(IAliveCreature conflictedObject, Game game);
+        void ActInConflict(ICreature conflictedObject, IAliveCreature aliveConflictedObject, int mapWidth, int mapHeight);
+        void ActInConflict(IAliveCreature conflictedObject, int mapWidth, int mapHeight);
+        bool DeadInConflict(ICreature conflictedObject);
+        bool DeadInConflict(IAliveCreature conflictedObject);
     }
 }

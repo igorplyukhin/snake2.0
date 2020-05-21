@@ -23,23 +23,33 @@ namespace SnakeGame
         {
             mapSave = map;
             aliveCreatures = new List<IAliveCreature>();
-            CreatureMapCreator.CreateMap(map, this);
-            Add(new Food(new Point(0,0), "food"));
+            this.map = CreatureMapCreator.CreateMap(map, aliveCreatures);
+            Add("food");
         }
 
         public void Restart()
         {
+            finishReason = "";
             isOver = false;
             delayedFinish = false;
             aliveCreatures = new List<IAliveCreature>();
-            CreatureMapCreator.CreateMap(mapSave, this);
-            Add(new Food(new Point(0, 0), "food"));
+            map = CreatureMapCreator.CreateMap(mapSave, aliveCreatures);
+            Add("food");
         }
 
         public void GameIteration()
         {
             foreach (var s in aliveCreatures)
-                s.Move(this);
+            {
+                s.Move(MapWidth, MapHeight);
+                if (!s.IsAlive())
+                {
+                    finishReason += s.GetName() + " dead, ";
+                    isOver = true;
+                }                
+            }
+            if (isOver)
+                return;
             CheckCollisions();
         }
 
@@ -53,10 +63,46 @@ namespace SnakeGame
                 var creature = map[pos.X, pos.Y];
                 if (creature != null)
                 {
-                    creature.ActInConflict(s, this);
-                    s.ActInConflict(creature, this);
+                    if (s.DeadInConflict(creature))
+                    {
+                        finishReason += s.GetName() + " dead,";
+                        isOver = true;
+                        continue;
+                    }
+                    creature.ActInConflict(s, MapWidth, MapHeight);
+                    s.ActInConflict(creature);
+                    map[pos.X, pos.Y] = null;
+                    if (creature.DeadInConflict(s))
+                    {
+                        if (creature is Food)
+                            Add("food");
+                        continue;
+                    }
+                    CheckSecondCollision(s, creature);
                 }
             }
+        }
+
+        private void CheckSecondCollision(IAliveCreature snake, ICreature creature)
+        {
+            var cPos = creature.GetPosition();
+            var conflictedCreature = map[cPos.X, cPos.Y];
+            if (conflictedCreature != null)
+            {
+                if (conflictedCreature.DeadInConflict(creature))
+                {
+                    conflictedCreature.ActInConflict(creature, snake, MapWidth, MapHeight);
+                    creature.ActInConflict(conflictedCreature, snake, MapWidth, MapHeight);
+                    map[cPos.X, cPos.Y] = creature;
+                    if (conflictedCreature is Destiny)
+                        Add("destiny");
+                    return;
+                }
+                isOver = true;
+                finishReason += snake.GetName() + " dead,";
+                return;
+            }
+            map[cPos.X, cPos.Y] = creature;
         }
 
         private void CheckSnakeCollisions()
@@ -105,7 +151,7 @@ namespace SnakeGame
                 aliveCreatures[1].TryChangeDirection(Direction.Right);
         }
 
-        public void Add(ICreature creature)
+        public void Add(string name)
         {
             var rndm = new Random();
             var x = 0;
@@ -124,8 +170,19 @@ namespace SnakeGame
                 }
                 check = count == 0 ? false : true;
             }
-            creature.SetPosition(x, y);
-            map[x, y] = creature;
+            switch (name)
+            {
+                case "food":
+                    {
+                        map[x, y] = new Food(new Point(x,y), name);
+                        break;
+                    }
+                case "destiny":
+                    {
+                        map[x, y] = new Destiny(new Point(x, y), name);
+                        break;
+                    }
+            }
         }
     }
 }

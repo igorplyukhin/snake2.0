@@ -22,50 +22,25 @@ namespace SnakeGame
             this.pos = pos;
         }
 
-        public void ActInConflict(ICreature conflictedObject, Game game) {}
-
-        public void ActInConflict(IAliveCreature conflictedObject, Game game)
+        public void ActInConflict(IAliveCreature conflictedObject, int mapWidth, int mapHeight)
         {
             if (conflictedObject is Snake)
             {
                 var dir = DirectionToPoint[conflictedObject.GetDirection()];
-                var x = (pos.X + dir.X + game.MapWidth) % game.MapWidth;
-                var y = (pos.Y + dir.Y + game.MapHeight) % game.MapHeight;
-                var creature = game.map[x, y];
-                game.map[pos.X, pos.Y] = null;
+                var x = (pos.X + dir.X + mapWidth) % mapWidth;
+                var y = (pos.Y + dir.Y + mapHeight) % mapHeight;
                 pos = new Point(x, y);
-                if (CheckSnakeCollisions(pos, game))
-                {
-                    game.isOver = true;
-                    game.finishReason = "Box-snake collision";
-                }
-                if (creature == null)
-                    game.map[x, y] = this;
-                else
-                    creature.ActInConflict(this, conflictedObject, game);
             }
         }
-
-        private bool CheckSnakeCollisions(Point point, Game game)
-        {
-            foreach (var s in game.aliveCreatures)
-                if (s.GetBody().Contains(point))
-                    return true;
-            return false;
-        }
-
-        public bool DeadInConflict(ICreature conflictedObject) => false;
 
         public string GetName() => name;
 
         public Point GetPosition() => pos;
 
-        public void ActInConflict(ICreature conflictedObject, IAliveCreature aliveConflictedObject, Game game) {}
+        public void ActInConflict(ICreature conflictedObject, IAliveCreature aliveConflictedObject, int mapWidth, int mapHeight) {}
 
-        public void SetPosition(int x, int y)
-        {
-            pos.X = x;
-            pos.Y = y;
-        }
+        public bool DeadInConflict(ICreature conflictedObject) => false;
+
+        public bool DeadInConflict(IAliveCreature conflictedObject) => false;
     }
 }

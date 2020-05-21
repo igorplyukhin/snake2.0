@@ -15,8 +15,10 @@ namespace SnakeGame
         LinkedList<Point> GetBody();
         int GetScore();
         void AddScore(int ads);
-        void ActInConflict(ICreature conflictedObject, Game game);
+        void ActInConflict(ICreature conflictedObject);
+        bool DeadInConflict(ICreature conflictedObject);
         void TryChangeDirection(Direction direction);
-        void Move(Game game);
+        void Move(int mapWidth, int mapHeight);
+        bool IsAlive();
     }
 }

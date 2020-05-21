@@ -83,7 +83,8 @@ namespace Tests
         public void SnakeShouldDieCollidingWithHerself()
         {
             var game = new Game(map2);
-            game.aliveCreatures.Add(new SnakeGame.Snake(new Point(1, 1), Direction.Down, ""));
+            var snake = new SnakeGame.Snake(new Point(1, 1), Direction.Down, "");
+            game.aliveCreatures.Add(snake);
             for (var i = 2; i < game.MapHeight; i++)
             {
                 game.map[1, i] = new Food(new Point(1, i), "food");
@@ -96,7 +97,7 @@ namespace Tests
             game.KeyPressed(Keys.Left);
             game.GameIteration();
             Assert.AreEqual(true, game.isOver);
-            Assert.AreEqual("Dead ", game.finishReason);
+            Assert.AreEqual(false, snake.IsAlive());
         }
 
         [TestCase(Keys.Left, -1, 0)]
@@ -130,7 +131,7 @@ namespace Tests
         [TestCase(2, 2, 1)]//Right
         [TestCase(3, 0, 1)]//Left
         public void SnakeShouldMoveToDirrections(int index, int expectedX, int expectedY)
-        {            
+        {
             var game = new Game(map);
             var i = 0;
             foreach (Direction dir in Enum.GetValues(typeof(Direction)))
@@ -140,7 +141,7 @@ namespace Tests
                 i++;
             }
             var snake = game.aliveCreatures[0];
-            snake.Move(game);
+            snake.Move(5,3);
             Assert.AreEqual(expectedX, snake.GetPosition().X);
             Assert.AreEqual(expectedY, snake.GetPosition().Y);
         }
@@ -151,7 +152,7 @@ namespace Tests
             var game = new Game(map);
             game.aliveCreatures.Add(new SnakeGame.Snake(new Point(0, 0), Direction.Right, ""));
             for (var i = 0; i < game.MapWidth; i++)
-                game.aliveCreatures[0].Move(game);
+                game.aliveCreatures[0].Move(game.MapWidth, game.MapHeight);
             Assert.AreEqual(new Point(0, 0), game.aliveCreatures[0].GetPosition());
         }
 
@@ -161,7 +162,7 @@ namespace Tests
             var game = new Game(map);
             game.aliveCreatures.Add(new SnakeGame.Snake(new Point(0, 0), Direction.Left, ""));
             for (var i = 0; i < game.MapWidth; i++)
-                game.aliveCreatures[0].Move(game);
+                game.aliveCreatures[0].Move(game.MapWidth, game.MapHeight);
             Assert.AreEqual(new Point(0, 0), game.aliveCreatures[0].GetPosition());
         }
 
@@ -171,7 +172,7 @@ namespace Tests
             var game = new Game(map);
             game.aliveCreatures.Add(new SnakeGame.Snake(new Point(0, 0), Direction.Up, ""));
             for (var i = 0; i < game.MapHeight; i++)
-                game.aliveCreatures[0].Move(game);
+                game.aliveCreatures[0].Move(game.MapWidth, game.MapHeight);
             Assert.AreEqual(new Point(0, 0), game.aliveCreatures[0].GetPosition());
         }
 
@@ -181,7 +182,7 @@ namespace Tests
             var game = new Game(map);
             game.aliveCreatures.Add(new SnakeGame.Snake(new Point(0, 0), Direction.Down, ""));
             for (var i = 0; i < game.MapHeight; i++)
-                game.aliveCreatures[0].Move(game);
+                game.aliveCreatures[0].Move(game.MapWidth, game.MapHeight);
             Assert.AreEqual(new Point(0, 0), game.aliveCreatures[0].GetPosition());
         }
     }
