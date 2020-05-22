@@ -24,8 +24,5 @@ namespace SnakeGame
         public string GetName() => name;
 
         public Point GetPosition() => pos;
-
-        public bool IsAlive() => true;
-
     }
 }
